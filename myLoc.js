@@ -3,8 +3,9 @@ var ourCoords = {
   longitude: -122.52099
 };
 
-window.onload = getMyLocation;
+var map;
 
+window.onload = getMyLocation;
 
 function getMyLocation(){
   if (navigator.geolocation){
@@ -25,6 +26,8 @@ function displayLocation(position) {
   var km = computeDistance(position.coords, ourCoords);
   var distance = document.getElementById("distance");
   distance.innerHTML = "You are " + km + " km from the WickedlySMart HQ";
+
+  showMap(position.coords);
 }
 
 function displayError (error){
@@ -61,7 +64,18 @@ function degreesToRadians(degrees) {
 }
 
 
+function showMap(coords) {
+  var googleLatAndLong = new google.maps.LatLng(coords.latitude, coords.longitude);
 
+  var mapOptions = {
+    zoom: 10,
+    center: googleLatAndLong,
+    mapTypeId: google.maps.MapTypeId.ROADMAP
+  };
+  
+  var mapDiv = document.getElementById("map");
+  map = new google.maps.Map(mapDiv, mapOptions);
+}
 
 
 

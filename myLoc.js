@@ -4,15 +4,31 @@ var ourCoords = {
 };
 
 var map;
+var watchId = null;
 
 window.onload = getMyLocation;
 
 function getMyLocation(){
   if (navigator.geolocation){
-    navigator.geolocation.getCurrentPosition(displayLocation, displayError);
+    var watchButton = document.getElementById("watch");
+    watchButton.onclick = watchLocation;
+    var clearWatchButton = document.getElementById("clearWatch");
+    clearWatchButton.onclick = clearWatch;
+
   }
   else {
     alert("Oops, no geolocation support");
+  }
+}
+
+function watchLocation() {
+  watchId = navigator.geolocation.watchPosition(displayLocation, displayError);
+}
+
+function clearWatch(){
+  if (watchId) {
+    navigator.geolocation.clearWatch(watchId);
+    watchId = null;
   }
 }
 
@@ -22,12 +38,16 @@ function displayLocation(position) {
 
   var div = document.getElementById("location");
   div.innerHTML = "You are at Latitude: " + latitude + ", Longitude: " + longitude;
+  div.innerHTML += " (with " + position.coords.accuracy + " meters accuracy)";
 
   var km = computeDistance(position.coords, ourCoords);
   var distance = document.getElementById("distance");
   distance.innerHTML = "You are " + km + " km from the WickedlySMart HQ";
 
-  showMap(position.coords);
+  if (map == null){
+    showMap(position.coords);  
+  }
+  
 }
 
 function displayError (error){
@@ -100,7 +120,6 @@ function addMarker (map, latlong, title, content) {
     infoWindow.open(map);
   });
 }
-
 
 
 

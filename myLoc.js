@@ -5,6 +5,7 @@ var ourCoords = {
 
 var map;
 var watchId = null;
+var prevCoords = null;
 
 window.onload = getMyLocation;
 
@@ -46,9 +47,15 @@ function displayLocation(position) {
 
   if (map == null){
     showMap(position.coords);  
+    prevCoords = position.coords;
+
   }
   else {
-    scrollMapToPosition(position.coords);
+    var meters = computeDistance(position.coords, prevCoords) * 1000;
+    if (meters > 20) {
+      scrollMapToPosition(position.coords);  
+    }
+    
   }
   
 }
